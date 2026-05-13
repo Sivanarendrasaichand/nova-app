@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#050a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NOVA">
+<meta name="description" content="NOVA — Neural Omnipresent Virtual Assistant. Your AI companion.">
+<title>NOVA — Neural Omnipresent Virtual Assistant</title>
+<link rel="manifest" href="nova-manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --nova-black: #050a0f;
+  --nova-deep: #080e16;
+  --nova-dark: #0c1520;
+  --nova-card: #0e1a26;
+  --nova-border: rgba(0,212,255,0.15);
+  --nova-border2: rgba(0,212,255,0.08);
+  --nova-cyan: #00d4ff;
+  --nova-blue: #0080ff;
+  --nova-purple: #7c3aed;
+  --nova-green: #00ff88;
+  --nova-amber: #ffaa00;
+  --nova-pink: #ff3d7f;
+  --nova-red: #ff4444;
+  --nova-text: #e8f4ff;
+  --nova-muted: #7ba0c0;
+  --nova-dim: #3a5570;
+  --font-hud: 'Orbitron', monospace;
+  --font-body: 'Rajdhani', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --glow-cyan: 0 0 20px rgba(0,212,255,0.3);
+  --glow-blue: 0 0 20px rgba(0,128,255,0.3);
+  --glow-green: 0 0 20px rgba(0,255,136,0.3);
+  --trans: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--nova-black);color:var(--nova-text);font-family:var(--font-body)}
+#app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;overflow:hidden}
+
+/* ── BACKGROUND GRID ── */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.04) 1px,transparent 1px);background-size:40px 40px}
+.pulse-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,212,255,0.1);animation:pulseRing 4s ease-out infinite}
+.pulse-ring:nth-child(2){width:300px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.pulse-ring:nth-child(3){width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s}
+.pulse-ring:nth-child(4){width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:2s}
+@keyframes pulseRing{0%{opacity:0.5;transform:translate(-50%,-50%) scale(0.8)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2)}}
+
+/* ── HEADER ── */
+#header{position:relative;z-index:10;padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--nova-border2);background:linear-gradient(180deg,rgba(5,10,15,0.95) 0%,transparent 100%)}
+.nova-logo{display:flex;align-items:center;gap:10px}
+.logo-orb{width:36px;height:36px;position:relative;flex-shrink:0}
+.logo-orb svg{width:100%;height:100%}
+.logo-text h1{font-family:var(--font-hud);font-size:16px;font-weight:700;color:var(--nova-cyan);letter-spacing:3px;line-height:1}
+.logo-text p{font-size:9px;color:var(--nova-muted);letter-spacing:2px;margin-top:2px;font-family:var(--font-hud)}
+.header-status{display:flex;align-items:center;gap:8px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--nova-green);box-shadow:var(--glow-green);animation:statusPulse 2s ease-in-out infinite}
+@keyframes statusPulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.status-label{font-size:10px;color:var(--nova-green);font-family:var(--font-hud);letter-spacing:1px}
+.lang-btn{background:rgba(0,212,255,0.08);border:1px solid var(--nova-border);color:var(--nova-cyan);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:var(--font-hud);transition:var(--trans)}
+.lang-btn:active{background:rgba(0,212,255,0.2)}
+
+/* ── NAVIGATION ── */
+#nav{position:relative;z-index:10;display:flex;padding:0 8px;border-bottom:1px solid var(--nova-border2);background:rgba(5,10,15,0.95);overflow-x:auto;scrollbar-width:none}
+#nav::-webkit-scrollbar{display:none}
+.nav-item{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent;transition:var(--trans);position:relative}
+.nav-item.active{border-bottom-color:var(--nova-cyan)}
+.nav-icon{font-size:18px;transition:var(--trans)}
+.nav-label{font-size:9px;color:var(--nova-muted);font-family:var(--font-hud);letter-spacing:1px;white-space:nowrap;transition:var(--trans)}
+.nav-item.active .nav-label{color:var(--nova-cyan)}
+.nav-item.active .nav-icon{filter:drop-shadow(0 0 6px var(--nova-cyan))}
+.nav-badge{position:absolute;top:4px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--nova-pink)}
+
+/* ── CONTENT AREA ── */
+#content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:5;scrollbar-width:thin;scrollbar-color:var(--nova-dim) transparent}
+#content::-webkit-scrollbar{width:2px}
+#content::-webkit-scrollbar-thumb{background:var(--nova-dim);border-radius:1px}
+.screen{display:none;padding:16px;min-height:100%;animation:fadeIn 0.4s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ── */
+.card{background:var(--nova-card);border:1px solid var(--nova-border2);border-radius:16px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;transition:var(--trans)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--nova-cyan),transparent);opacity:0.4}
+.card-glow{box-shadow:var(--glow-cyan)}
+.card-title{font-family:var(--font-hud);font-size:11px;color:var(--nova-muted);letter-spacing:2px;margin-bottom:12px;text-transform:uppercase}
+.card-value{font-family:var(--font-hud);font-size:28px;font-weight:700;color:var(--nova-cyan)}
+.card-sub{font-size:13px;color:var(--nova-muted);margin-top:4px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:600;transition:var(--trans);letter-spacing:0.5px;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--nova-cyan),var(--nova-blue));color:#000;box-shadow:var(--glow-cyan)}
+.btn-primary:active{transform:scale(0.97)}
+.btn-outline{background:transparent;border:1px solid var(--nova-border);color:var(--nova-cyan)}
+.btn-outline:active{background:rgba(0,212,255,0.1)}
+.btn-ghost{background:rgba(0,212,255,0.06);border:1px solid var(--nova-border2);color:var(--nova-text)}
+.btn-sm{padding:6px 14px;font-size:12px;border-radius:8px}
+.btn-danger{background:rgba(255,68,68,0.15);border:1px solid rgba(255,68,68,0.3);color:var(--nova-red)}
+.btn-success{background:rgba(0,255,136,0.12);border:1px solid rgba(0,255,136,0.3);color:var(--nova-green)}
+
+/* ── INPUTS ── */
+.input-field{width:100%;background:rgba(0,212,255,0.04);border:1px solid var(--nova-border2);border-radius:10px;padding:12px 14px;color:var(--nova-text);font-family:var(--font-body);font-size:15px;outline:none;transition:var(--trans)}
+.input-field:focus{border-color:var(--nova-cyan);box-shadow:0 0 0 2px rgba(0,212,255,0.1)}
+.input-field::placeholder{color:var(--nova-dim)}
+.input-label{font-size:11px;color:var(--nova-muted);font-family:var(--font-hud);letter-spacing:1px;margin-bottom:6px;display:block}
+.input-group{margin-bottom:14px}
+textarea.input-field{resize:none;min-height:80px}
+
+/* ── MOOD SELECTOR ── */
+.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:rgba(0,212,255,0.04);border:1px solid var(--nova-border2);border-radius:12px;cursor:pointer;transition:var(--trans)}
+.mood-btn.selected{border-color:var(--nova-cyan);background:rgba(0,212,255,0.12);box-shadow:var(--glow-cyan)}
+.mood-emoji{font-size:24px;line-height:1}
+.mood-label{font-size:10px;color:var(--nova-muted);font-family:var(--font-hud)}
+
+/* ── CHAT ── */
+#chat-screen{padding:0;display:flex;flex-direction:column;height:calc(100vh - 120px)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;scrollbar-width:none;display:flex;flex-direction:column;gap:12px}
+.chat-messages::-webkit-scrollbar{display:none}
+.msg{max-width:85%;padding:12px 16px;border-radius:16px;font-size:15px;line-height:1.5;animation:msgIn 0.3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-nova{background:linear-gradient(135deg,rgba(0,128,255,0.15),rgba(0,212,255,0.1));border:1px solid rgba(0,212,255,0.2);border-radius:4px 16px 16px 16px;color:var(--nova-text)}
+.msg-user{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3);border-radius:16px 16px 4px 16px;color:var(--nova-text);align-self:flex-end}
+.msg-name{font-size:10px;font-family:var(--font-hud);color:var(--nova-cyan);margin-bottom:4px;letter-spacing:1px}
+.typing-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--nova-cyan);margin:0 2px;animation:typing 1.2s ease infinite}
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes typing{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.chat-input-area{padding:12px 16px 16px;background:rgba(5,10,15,0.95);border-top:1px solid var(--nova-border2);display:flex;gap:8px;align-items:flex-end}
+.chat-input-wrap{flex:1;position:relative}
+#chat-input{width:100%;background:rgba(0,212,255,0.05);border:1px solid var(--nova-border);border-radius:12px;padding:10px 44px 10px 14px;color:var(--nova-text);font-family:var(--font-body);font-size:15px;outline:none;resize:none;max-height:100px;transition:var(--trans)}
+#chat-input:focus{border-color:var(--nova-cyan)}
+.lang-toggle{position:absolute;right:10px;bottom:10px;font-size:10px;color:var(--nova-muted);cursor:pointer;font-family:var(--font-hud)}
+.send-btn{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--nova-cyan),var(--nova-blue));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--trans)}
+.send-btn:active{transform:scale(0.9)}
+.quick-chips{display:flex;gap:8px;overflow-x:auto;padding:8px 16px 0;scrollbar-width:none}
+.quick-chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:6px 12px;background:rgba(0,212,255,0.06);border:1px solid var(--nova-border2);border-radius:20px;font-size:12px;color:var(--nova-muted);cursor:pointer;transition:var(--trans);white-space:nowrap}
+.chip:active{background:rgba(0,212,255,0.15);color:var(--nova-cyan)}
+
+/* ── METRICS GRID ── */
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.metric-card{background:var(--nova-card);border:1px solid var(--nova-border2);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+.metric-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,0.03),transparent);pointer-events:none}
+.metric-icon{font-size:22px;margin-bottom:6px}
+.metric-label{font-size:10px;color:var(--nova-muted);font-family:var(--font-hud);letter-spacing:1px}
+.metric-val{font-family:var(--font-hud);font-size:20px;font-weight:700;margin-top:2px}
+.metric-trend{font-size:11px;margin-top:3px}
+.trend-up{color:var(--nova-green)}
+.trend-down{color:var(--nova-red)}
+
+/* ── PROGRESS BARS ── */
+.progress-bar{height:6px;background:rgba(0,212,255,0.1);border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--nova-blue),var(--nova-cyan));transition:width 0.8s cubic-bezier(0.4,0,0.2,1);position:relative}
+.progress-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:8px;background:rgba(255,255,255,0.4);filter:blur(2px)}
+
+/* ── CHART MINI ── */
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:60px;margin:12px 0}
+.chart-bar{flex:1;border-radius:3px 3px 0 0;min-width:8px;transition:height 0.5s ease;cursor:pointer;position:relative}
+.chart-bar:hover::after{content:attr(data-val);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);font-size:10px;color:var(--nova-cyan);white-space:nowrap;font-family:var(--font-hud)}
+
+/* ── SLIDERS ── */
+.slider-wrap{padding:8px 0}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.slider-label{font-size:12px;color:var(--nova-muted);width:80px;flex-shrink:0}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:rgba(0,212,255,0.15);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--nova-cyan);box-shadow:var(--glow-cyan)}
+.slider-val{font-size:12px;font-family:var(--font-hud);color:var(--nova-cyan);min-width:28px;text-align:right}
+
+/* ── TOGGLE ── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--nova-border2)}
+.toggle-info h4{font-size:15px;color:var(--nova-text);font-family:var(--font-body)}
+.toggle-info p{font-size:12px;color:var(--nova-muted);margin-top:2px}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:rgba(0,212,255,0.1);border:1px solid var(--nova-border);border-radius:12px;cursor:pointer;transition:var(--trans)}
+.toggle input:checked + .toggle-slider{background:rgba(0,212,255,0.3);border-color:var(--nova-cyan)}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;background:var(--nova-muted);border-radius:50%;top:2px;left:2px;transition:var(--trans)}
+.toggle input:checked + .toggle-slider::before{background:var(--nova-cyan);transform:translateX(20px);box-shadow:var(--glow-cyan)}
+
+/* ── SECTION HEADERS ── */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-family:var(--font-hud);font-size:12px;color:var(--nova-cyan);letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.section-title::before{content:'';width:3px;height:14px;background:var(--nova-cyan);border-radius:2px;display:block}
+.section-action{font-size:12px;color:var(--nova-blue);cursor:pointer}
+
+/* ── TIMELINE ── */
+.timeline-item{display:flex;gap:12px;margin-bottom:14px;padding-left:2px}
+.timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--nova-cyan);box-shadow:var(--glow-cyan);flex-shrink:0;margin-top:4px;position:relative}
+.timeline-dot::before{content:'';position:absolute;top:10px;left:4px;width:2px;height:calc(100% + 10px);background:var(--nova-border)}
+.timeline-item:last-child .timeline-dot::before{display:none}
+.timeline-content{flex:1}
+.timeline-title{font-size:14px;color:var(--nova-text)}
+.timeline-time{font-size:11px;color:var(--nova-muted);font-family:var(--font-hud);margin-top:2px}
+
+/* ── STOCK TICKER ── */
+.ticker-wrap{overflow:hidden;white-space:nowrap;padding:8px 0}
+.ticker-inner{display:inline-block;animation:ticker 20s linear infinite}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;margin-right:30px;font-family:var(--font-hud);font-size:12px}
+.ticker-sym{color:var(--nova-cyan)}
+.ticker-price{color:var(--nova-text)}
+.ticker-chg-pos{color:var(--nova-green)}
+.ticker-chg-neg{color:var(--nova-red)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── FOOD LOG ── */
+.food-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(0,212,255,0.04);border:1px solid var(--nova-border2);border-radius:10px;margin-bottom:8px}
+.food-name{font-size:14px;color:var(--nova-text)}
+.food-cal{font-family:var(--font-hud);font-size:13px;color:var(--nova-amber)}
+.food-del{font-size:16px;cursor:pointer;color:var(--nova-dim);padding:2px 6px}
+
+/* ── BUDGET ── */
+.budget-bar-wrap{margin-bottom:14px}
+.budget-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.budget-cat{font-size:13px;color:var(--nova-text)}
+.budget-amounts{font-size:12px;color:var(--nova-muted);font-family:var(--font-hud)}
+.budget-progress{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.budget-fill{height:100%;border-radius:4px;transition:width 0.8s ease}
+.fill-safe{background:linear-gradient(90deg,#00b894,#00ff88)}
+.fill-warn{background:linear-gradient(90deg,#fdcb6e,var(--nova-amber))}
+.fill-danger{background:linear-gradient(90deg,#e17055,var(--nova-red))}
+
+/* ── STOCK CHART ── */
+.stock-chart{height:100px;position:relative;margin:8px 0}
+.stock-chart canvas{width:100%!important;height:100%!important}
+
+/* ── ONBOARDING / SPLASH ── */
+#splash{position:fixed;inset:0;z-index:1000;background:var(--nova-black);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s ease}
+#splash.hidden{opacity:0;pointer-events:none}
+.splash-orb{width:120px;height:120px;position:relative;margin-bottom:30px}
+.splash-rings{position:absolute;inset:0;animation:spinSlow 8s linear infinite}
+.splash-core{position:absolute;inset:20px;border-radius:50%;background:radial-gradient(circle,var(--nova-cyan),var(--nova-blue));box-shadow:0 0 40px rgba(0,212,255,0.5);animation:coreBreath 2s ease-in-out infinite}
+@keyframes spinSlow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes coreBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.splash-title{font-family:var(--font-hud);font-size:32px;font-weight:900;color:var(--nova-cyan);letter-spacing:8px;margin-bottom:8px;text-shadow:0 0 30px rgba(0,212,255,0.5)}
+.splash-sub{font-family:var(--font-hud);font-size:10px;color:var(--nova-muted);letter-spacing:3px;margin-bottom:40px}
+.boot-line{font-family:var(--font-hud);font-size:12px;color:var(--nova-green);letter-spacing:1px;margin:4px 0;opacity:0;animation:bootFade 0.5s ease forwards}
+.boot-line:nth-child(1){animation-delay:0.2s}
+.boot-line:nth-child(2){animation-delay:0.7s}
+.boot-line:nth-child(3){animation-delay:1.2s}
+.boot-line:nth-child(4){animation-delay:1.7s}
+@keyframes bootFade{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── INSTALL PROMPT ── */
+#install-prompt{display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(8,14,22,0.98);border-top:1px solid var(--nova-border);padding:16px;z-index:100;backdrop-filter:blur(20px)}
+#install-prompt.show{display:block;animation:slideUp 0.3s ease}
+@keyframes slideUp{from{transform:translateX(-50%) translateY(100%)}to{transform:translateX(-50%) translateY(0)}}
+.install-inner{display:flex;align-items:center;gap:12px}
+.install-text{flex:1}
+.install-text h4{font-size:15px;font-family:var(--font-hud);color:var(--nova-cyan)}
+.install-text p{font-size:12px;color:var(--nova-muted);margin-top:2px}
+
+/* ── HUD DECORATION ── */
+.hud-corner{position:absolute;width:16px;height:16px;opacity:0.4}
+.hud-corner.tl{top:8px;left:8px;border-top:1px solid var(--nova-cyan);border-left:1px solid var(--nova-cyan)}
+.hud-corner.tr{top:8px;right:8px;border-top:1px solid var(--nova-cyan);border-right:1px solid var(--nova-cyan)}
+.hud-corner.bl{bottom:8px;left:8px;border-bottom:1px solid var(--nova-cyan);border-left:1px solid var(--nova-cyan)}
+.hud-corner.br{bottom:8px;right:8px;border-bottom:1px solid var(--nova-cyan);border-right:1px solid var(--nova-cyan)}
+
+/* ── MISC ── */
+.divider{height:1px;background:var(--nova-border2);margin:16px 0}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-family:var(--font-hud);letter-spacing:1px}
+.badge-cyan{background:rgba(0,212,255,0.15);color:var(--nova-cyan);border:1px solid rgba(0,212,255,0.3)}
+.badge-green{background:rgba(0,255,136,0.12);color:var(--nova-green);border:1px solid rgba(0,255,136,0.25)}
+.badge-amber{background:rgba(255,170,0,0.12);color:var(--nova-amber);border:1px solid rgba(255,170,0,0.25)}
+.badge-red{background:rgba(255,68,68,0.12);color:var(--nova-red);border:1px solid rgba(255,68,68,0.25)}
+.text-cyan{color:var(--nova-cyan)}
+.text-green{color:var(--nova-green)}
+.text-amber{color:var(--nova-amber)}
+.text-red{color:var(--nova-red)}
+.text-muted{color:var(--nova-muted)}
+.text-hud{font-family:var(--font-hud)}
+.flex-row{display:flex;align-items:center;gap:8px}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.emoji{font-style:normal}
+.pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--nova-border2);color:var(--nova-muted);transition:var(--trans)}
+.pill.active,.pill:active{background:rgba(0,212,255,0.12);border-color:var(--nova-cyan);color:var(--nova-cyan)}
+.nova-insight{background:linear-gradient(135deg,rgba(0,128,255,0.12),rgba(0,212,255,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.6;position:relative}
+.nova-insight::before{content:'◈ NOVA';position:absolute;top:-8px;left:12px;font-size:9px;font-family:var(--font-hud);color:var(--nova-cyan);background:var(--nova-dark);padding:0 6px;letter-spacing:1px}
+.circular-progress{position:relative;width:80px;height:80px;flex-shrink:0}
+.circular-progress svg{width:80px;height:80px;transform:rotate(-90deg)}
+.circular-bg{fill:none;stroke:rgba(0,212,255,0.1);stroke-width:6}
+.circular-fg{fill:none;stroke:var(--nova-cyan);stroke-width:6;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:220;transition:stroke-dashoffset 1s ease}
+.circular-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.circular-val{font-family:var(--font-hud);font-size:16px;font-weight:700;color:var(--nova-cyan);line-height:1}
+.circular-sub{font-size:9px;color:var(--nova-muted)}
+
+/* ── NOTIFICATION TOAST ── */
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(0,212,255,0.15);border:1px solid var(--nova-cyan);border-radius:12px;padding:10px 20px;font-size:13px;font-family:var(--font-hud);color:var(--nova-cyan);white-space:nowrap;opacity:0;transition:opacity 0.3s;pointer-events:none;letter-spacing:1px}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-orb">
+    <svg class="splash-rings" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="55" stroke="rgba(0,212,255,0.2)" stroke-width="1" stroke-dasharray="6 4"/>
+      <circle cx="60" cy="60" r="45" stroke="rgba(0,128,255,0.2)" stroke-width="1" stroke-dasharray="3 6"/>
+      <circle cx="60" cy="60" r="35" stroke="rgba(0,212,255,0.15)" stroke-width="0.5"/>
+    </svg>
+    <div class="splash-core"></div>
+  </div>
+  <div class="splash-title">NOVA</div>
+  <div class="splash-sub">NEURAL OMNIPRESENT VIRTUAL ASSISTANT</div>
+  <div style="text-align:left;min-width:240px">
+    <div class="boot-line">▶ INITIALIZING NEURAL CORE...</div>
+    <div class="boot-line">▶ LOADING KNOWLEDGE MATRIX...</div>
+    <div class="boot-line">▶ CALIBRATING EMPATHY ENGINE...</div>
+    <div class="boot-line" style="color:var(--nova-cyan)">▶ NOVA ONLINE. READY TO ASSIST.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div id="bg">
+    <div class="grid-lines"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+  </div>
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="nova-logo">
+      <div class="logo-orb">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="16" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+          <circle cx="18" cy="18" r="10" stroke="rgba(0,128,255,0.5)" stroke-width="1"/>
+          <circle cx="18" cy="18" r="5" fill="url(#g1)"/>
+          <line x1="18" y1="2" x2="18" y2="8" stroke="var(--nova-cyan)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="18" y1="28" x2="18" y2="34" stroke="var(--nova-cyan)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="2" y1="18" x2="8" y2="18" stroke="var(--nova-cyan)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="28" y1="18" x2="34" y2="18" stroke="var(--nova-cyan)" stroke-width="1.5" stroke-linecap="round"/>
+          <defs><radialGradient id="g1" cx="40%" cy="40%"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#0080ff"/></radialGradient></defs>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>NOVA</h1>
+        <p>NEURAL ASSISTANT</p>
+      </div>
+    </div>
+    <div class="header-status">
+      <div class="status-dot"></div>
+      <span class="status-label" id="lang-display">EN</span>
+      <button class="lang-btn" onclick="cycleLang()">🌐</button>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div id="nav">
+    <div class="nav-item active" onclick="showScreen('home')">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">HOME</span>
+    </div>
+    <div class="nav-item" onclick="showScreen('chat')">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">CHAT</span>
+      <div class="nav-badge"></div>
+    </div>
+    <div class="nav-item" onclick="showScreen('mental')">
+      <span class="nav-icon">🧠</span>
+      <span class="nav-label">MENTAL</span>
+    </div>
+    <div class="nav-item" onclick="showScreen('health')">
+      <span class="nav-icon">❤️</span>
+      <span class="nav-label">HEALTH</span>
+    </div>
+    <div class="nav-item" onclick="showScreen('finance')">
+      <span class="nav-icon">📈</span>
+      <span class="nav-label">FINANCE</span>
+    </div>
+    <div class="nav-item" onclick="showScreen('learn')">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">LEARN</span>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+    <!-- ═══════════════════ HOME ═══════════════════ -->
+    <div class="screen active" id="screen-home">
+      <!-- Greeting -->
+      <div class="card card-glow" style="background:linear-gradient(135deg,rgba(0,128,255,0.15),rgba(0,212,255,0.08));margin-bottom:16px">
+        <div class="hud-corner tl"></div>
+        <div class="hud-corner tr"></div>
+        <div class="hud-corner bl"></div>
+        <div class="hud-corner br"></div>
+        <div style="font-size:11px;color:var(--nova-muted);font-family:var(--font-hud);letter-spacing:2px" id="home-date">LOADING...</div>
+        <div style="font-size:22px;font-weight:700;margin:6px 0;color:var(--nova-text)" id="home-greeting">Hello!</div>
+        <div style="font-size:14px;color:var(--nova-muted);line-height:1.5" id="home-message">NOVA is ready to assist you today.</div>
+        <div class="mt-12">
+          <span class="badge badge-cyan" id="streak-badge">🔥 0 day streak</span>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">😊</div>
+          <div class="metric-label">MOOD TODAY</div>
+          <div class="metric-val text-cyan" id="home-mood">--</div>
+          <div class="metric-trend" id="mood-trend">Not logged yet</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">💧</div>
+          <div class="metric-label">HYDRATION</div>
+          <div class="metric-val text-cyan" id="home-water">0</div>
+          <div class="metric-trend text-muted">glasses today</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🏃</div>
+          <div class="metric-label">STEPS</div>
+          <div class="metric-val text-green" id="home-steps">0</div>
+          <div class="metric-trend text-muted">goal: 10,000</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">😴</div>
+          <div class="metric-label">SLEEP</div>
+          <div class="metric-val text-amber" id="home-sleep">--</div>
+          <div class="metric-trend text-muted">hrs last night</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-title">QUICK ACTIONS</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="btn btn-ghost" onclick="showScreen('mental')">🧠 Check In</button>
+          <button class="btn btn-ghost" onclick="showScreen('chat')">💬 Talk to NOVA</button>
+          <button class="btn btn-ghost" onclick="addWater()">💧 Log Water</button>
+          <button class="btn btn-ghost" onclick="showScreen('health')">🍽 Log Meal</button>
+        </div>
+      </div>
+
+      <!-- NOVA Insight -->
+      <div class="nova-insight" id="home-insight">
+        Loading your personalized insight...
+      </div>
+
+      <!-- Mood Week Chart -->
+      <div class="card">
+        <div class="section-header">
+          <div class="section-title">MOOD THIS WEEK</div>
+        </div>
+        <div class="mini-chart" id="mood-chart">
+          <!-- Bars rendered by JS -->
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <span class="text-muted" style="font-size:10px;font-family:var(--font-hud)">MON</span>
+          <span class="text-muted" style="font-size:10px;font-family:var(--font-hud)">TUE</span>
+          <span class="text-muted" style="font-size:10px;font-family:var(--font-hud)">WED</span>
+          <span class="text-muted" style="font-size:10px;font-family:var(--font-hud)">THU</span>
+          <span class="text-muted" style="font-size:10px;font-family:var(--font-hud)">FRI</span>
+          <span class="text-muted" style="font-size:10px;font-family:var(--font-hud)">SAT</span>
+          <span class="text-muted" style="font-size:10px;font-family:var(--font-hud)">SUN</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ CHAT ═══════════════════ -->
+    <div class="screen" id="screen-chat" style="padding:0;display:flex;flex-direction:column;height:calc(100dvh - 120px)">
+      <div class="quick-chips" id="quick-chips">
+        <div class="chip" onclick="sendQuick(this)">I'm feeling anxious</div>
+        <div class="chip" onclick="sendQuick(this)">Motivate me</div>
+        <div class="chip" onclick="sendQuick(this)">Sleep tips</div>
+        <div class="chip" onclick="sendQuick(this)">Budget advice</div>
+        <div class="chip" onclick="sendQuick(this)">Stock basics</div>
+        <div class="chip" onclick="sendQuick(this)">నమస్కారం NOVA</div>
+        <div class="chip" onclick="sendQuick(this)">मुझे प्रेरित करो</div>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="msg msg-nova">
+          <div class="msg-name">◈ NOVA</div>
+          <div id="intro-msg">Hello! I'm NOVA, your Neural Omnipresent Virtual Assistant. I'm here to support you — emotionally, intellectually, financially, and physically. How are you feeling today? 🌟</div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="chat-input-wrap">
+          <textarea id="chat-input" rows="1" placeholder="Talk to NOVA..." onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+          <span class="lang-toggle" id="input-lang" onclick="cycleLang()">EN</span>
+        </div>
+        <button class="send-btn" onclick="sendMessage()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ MENTAL HEALTH ═══════════════════ -->
+    <div class="screen" id="screen-mental">
+      <div class="section-header">
+        <div class="section-title">DAILY CHECK-IN</div>
+        <span class="badge badge-green">✓ Track Daily</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">HOW ARE YOU FEELING RIGHT NOW?</div>
+        <div class="mood-grid" id="mood-selector">
+          <div class="mood-btn" onclick="selectMood(1,this)">
+            <span class="mood-emoji">😔</span>
+            <span class="mood-label">LOW</span>
+          </div>
+          <div class="mood-btn" onclick="selectMood(2,this)">
+            <span class="mood-emoji">😕</span>
+            <span class="mood-label">MEH</span>
+          </div>
+          <div class="mood-btn" onclick="selectMood(3,this)">
+            <span class="mood-emoji">😐</span>
+            <span class="mood-label">OK</span>
+          </div>
+          <div class="mood-btn" onclick="selectMood(4,this)">
+            <span class="mood-emoji">😊</span>
+            <span class="mood-label">GOOD</span>
+          </div>
+          <div class="mood-btn" onclick="selectMood(5,this)">
+            <span class="mood-emoji">🤩</span>
+            <span class="mood-label">GREAT</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">FEELINGS (SELECT ALL THAT APPLY)</div>
+        <div class="pill-row" id="feelings-pills">
+          <div class="pill" onclick="togglePill(this)">😰 Anxious</div>
+          <div class="pill" onclick="togglePill(this)">😔 Sad</div>
+          <div class="pill" onclick="togglePill(this)">😤 Stressed</div>
+          <div class="pill" onclick="togglePill(this)">😴 Tired</div>
+          <div class="pill" onclick="togglePill(this)">😄 Happy</div>
+          <div class="pill" onclick="togglePill(this)">🎯 Focused</div>
+          <div class="pill" onclick="togglePill(this)">😤 Angry</div>
+          <div class="pill" onclick="togglePill(this)">🤔 Confused</div>
+          <div class="pill" onclick="togglePill(this)">💪 Motivated</div>
+          <div class="pill" onclick="togglePill(this)">😌 Calm</div>
+          <div class="pill" onclick="togglePill(this)">🥺 Overwhelmed</div>
+          <div class="pill" onclick="togglePill(this)">😊 Grateful</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ENERGY & STRESS LEVELS</div>
+        <div class="slider-wrap">
+          <div class="slider-row">
+            <span class="slider-label">⚡ Energy</span>
+            <input type="range" min="1" max="10" value="5" oninput="updateSlider(this,'energy-val')">
+            <span class="slider-val" id="energy-val">5</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">😤 Stress</span>
+            <input type="range" min="1" max="10" value="3" oninput="updateSlider(this,'stress-val')">
+            <span class="slider-val" id="stress-val">3</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">🎯 Focus</span>
+            <input type="range" min="1" max="10" value="7" oninput="updateSlider(this,'focus-val')">
+            <span class="slider-val" id="focus-val">7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TODAY'S JOURNAL</div>
+        <div class="input-group">
+          <textarea class="input-field" id="journal-text" rows="4" placeholder="What's on your mind? Write freely..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="saveCheckin()" style="width:100%">◈ SAVE & GET NOVA'S INSIGHT</button>
+      </div>
+
+      <div class="nova-insight" id="mental-insight" style="display:none"></div>
+
+      <!-- Breathing Exercise -->
+      <div class="card mt-16">
+        <div class="card-title">BREATHING EXERCISE</div>
+        <div style="display:flex;justify-content:center;padding:16px 0">
+          <div class="circular-progress" style="width:100px;height:100px" id="breath-circle">
+            <svg viewBox="0 0 100 100" style="width:100px;height:100px;transform:rotate(-90deg)">
+              <circle class="circular-bg" cx="50" cy="50" r="42" stroke="rgba(0,212,255,0.1)" stroke-width="8"/>
+              <circle id="breath-ring" cx="50" cy="50" r="42" fill="none" stroke="var(--nova-cyan)" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+            </svg>
+            <div class="circular-label" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span style="font-family:var(--font-hud);font-size:13px;color:var(--nova-cyan)" id="breath-text">TAP</span>
+              <span style="font-size:10px;color:var(--nova-muted);font-family:var(--font-hud)" id="breath-phase">START</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:13px;color:var(--nova-muted);margin-bottom:12px">4-7-8 Breathing for calm & focus</div>
+        <button class="btn btn-outline" style="width:100%" id="breath-btn" onclick="toggleBreathing()">▶ START BREATHING</button>
+      </div>
+
+      <!-- Affirmations -->
+      <div class="card">
+        <div class="card-title">NOVA'S AFFIRMATION</div>
+        <div style="font-size:18px;color:var(--nova-text);line-height:1.6;text-align:center;padding:10px 0;font-style:italic" id="affirmation-text">
+          "You are capable of handling whatever comes your way."
+        </div>
+        <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" onclick="newAffirmation()">✨ NEW AFFIRMATION</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ HEALTH ═══════════════════ -->
+    <div class="screen" id="screen-health">
+
+      <!-- Sleep Tracker -->
+      <div class="section-header">
+        <div class="section-title">SLEEP TRACKER</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="circular-progress">
+            <svg viewBox="0 0 80 80"><circle class="circular-bg" cx="40" cy="40" r="32"/><circle class="circular-fg" id="sleep-circle" cx="40" cy="40" r="32"/></svg>
+            <div class="circular-label"><span class="circular-val" id="sleep-display">0h</span><span class="circular-sub">SLEEP</span></div>
+          </div>
+          <div style="flex:1">
+            <div class="input-group">
+              <label class="input-label">BEDTIME</label>
+              <input type="time" class="input-field" id="bed-time" value="23:00" style="padding:8px 12px">
+            </div>
+            <div class="input-group" style="margin-bottom:0">
+              <label class="input-label">WAKE TIME</label>
+              <input type="time" class="input-field" id="wake-time" value="07:00" style="padding:8px 12px">
+            </div>
+          </div>
+        </div>
+        <div class="mt-12">
+          <div class="progress-bar"><div class="progress-fill" id="sleep-bar" style="width:0%"></div></div>
+          <div class="flex-between"><span style="font-size:11px;color:var(--nova-muted)">Goal: 8 hours</span><span style="font-size:11px;color:var(--nova-cyan)" id="sleep-quality">—</span></div>
+        </div>
+        <button class="btn btn-primary btn-sm mt-12" onclick="logSleep()">LOG SLEEP</button>
+      </div>
+
+      <!-- Water Intake -->
+      <div class="section-header mt-8">
+        <div class="section-title">HYDRATION</div>
+        <span class="text-cyan text-hud" style="font-size:12px" id="water-count-header">0 / 8</span>
+      </div>
+      <div class="card">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          <div id="water-glasses" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"></div>
+        </div>
+        <div class="mt-12 flex-row">
+          <button class="btn btn-success btn-sm" onclick="addWater()" style="flex:1">+ GLASS</button>
+          <button class="btn btn-danger btn-sm" onclick="removeWater()" style="flex:1">− GLASS</button>
+        </div>
+        <div class="nova-insight mt-8" style="font-size:13px" id="water-tip">Stay hydrated! Aim for 8 glasses daily.</div>
+      </div>
+
+      <!-- Food Tracker -->
+      <div class="section-header mt-8">
+        <div class="section-title">FOOD LOG</div>
+        <span class="badge badge-amber" id="cal-badge">0 kcal</span>
+      </div>
+      <div class="card">
+        <div class="flex-row" style="gap:8px;margin-bottom:12px">
+          <input type="text" class="input-field" id="food-input" placeholder="e.g. Idli, Dosa, Rice..." style="flex:1">
+          <input type="number" class="input-field" id="cal-input" placeholder="kcal" style="width:80px">
+          <button class="btn btn-primary btn-sm" onclick="addFood()">+</button>
+        </div>
+        <div id="food-list">
+          <div style="text-align:center;color:var(--nova-muted);font-size:13px;padding:16px">No meals logged yet. Add your first meal!</div>
+        </div>
+        <div class="divider"></div>
+        <div style="font-size:11px;color:var(--nova-muted);font-family:var(--font-hud)">QUICK ADD:</div>
+        <div class="pill-row mt-8">
+          <div class="pill" onclick="quickFood('Idli (2 pcs)','120')">🍚 Idli</div>
+          <div class="pill" onclick="quickFood('Dosa','200')">🫓 Dosa</div>
+          <div class="pill" onclick="quickFood('Rice Bowl','350')">🍛 Rice</div>
+          <div class="pill" onclick="quickFood('Dal','150')">🫘 Dal</div>
+          <div class="pill" onclick="quickFood('Chapati','120')">🫓 Chapati</div>
+          <div class="pill" onclick="quickFood('Tea','30')">☕ Tea</div>
+          <div class="pill" onclick="quickFood('Banana','90')">🍌 Banana</div>
+          <div class="pill" onclick="quickFood('Egg','70')">🥚 Egg</div>
+        </div>
+      </div>
+
+      <!-- Steps Tracker -->
+      <div class="section-header mt-8">
+        <div class="section-title">STEPS TODAY</div>
+      </div>
+      <div class="card">
+        <div class="flex-between">
+          <div>
+            <div class="card-value" id="steps-display">0</div>
+            <div class="card-sub">of 10,000 steps</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:var(--font-hud);font-size:14px;color:var(--nova-green)" id="steps-pct">0%</div>
+            <div style="font-size:12px;color:var(--nova-muted)">completed</div>
+          </div>
+        </div>
+        <div class="progress-bar mt-12"><div class="progress-fill" id="steps-bar" style="width:0%;background:linear-gradient(90deg,var(--nova-green),#00ffaa)"></div></div>
+        <div class="flex-row mt-12">
+          <input type="number" class="input-field" id="steps-input" placeholder="Enter steps" style="flex:1">
+          <button class="btn btn-success btn-sm" onclick="logSteps()">LOG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ FINANCE ═══════════════════ -->
+    <div class="screen" id="screen-finance">
+
+      <!-- Stock Ticker -->
+      <div class="card" style="padding:10px 16px">
+        <div class="ticker-wrap">
+          <div class="ticker-inner" id="ticker">
+            <span class="ticker-item"><span class="ticker-sym">RELIANCE</span><span class="ticker-price">₹2,847</span><span class="ticker-chg-pos">+1.2%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">TCS</span><span class="ticker-price">₹3,621</span><span class="ticker-chg-pos">+0.8%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">INFY</span><span class="ticker-price">₹1,489</span><span class="ticker-chg-neg">-0.3%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">HDFC</span><span class="ticker-price">₹1,702</span><span class="ticker-chg-pos">+0.5%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">NIFTY50</span><span class="ticker-price">22,450</span><span class="ticker-chg-pos">+0.7%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">SENSEX</span><span class="ticker-price">73,890</span><span class="ticker-chg-pos">+0.6%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">RELIANCE</span><span class="ticker-price">₹2,847</span><span class="ticker-chg-pos">+1.2%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">TCS</span><span class="ticker-price">₹3,621</span><span class="ticker-chg-pos">+0.8%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">INFY</span><span class="ticker-price">₹1,489</span><span class="ticker-chg-neg">-0.3%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">HDFC</span><span class="ticker-price">₹1,702</span><span class="ticker-chg-pos">+0.5%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">NIFTY50</span><span class="ticker-price">22,450</span><span class="ticker-chg-pos">+0.7%</span></span>
+            <span class="ticker-item"><span class="ticker-sym">SENSEX</span><span class="ticker-price">73,890</span><span class="ticker-chg-pos">+0.6%</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget Overview -->
+      <div class="section-header">
+        <div class="section-title">MONTHLY BUDGET</div>
+        <span class="badge badge-cyan" id="budget-month">MAY 2026</span>
+      </div>
+
+      <div class="card">
+        <div class="flex-between" style="margin-bottom:16px">
+          <div>
+            <div style="font-size:11px;color:var(--nova-muted);font-family:var(--font-hud)">TOTAL INCOME</div>
+            <div style="font-family:var(--font-hud);font-size:22px;color:var(--nova-green)">₹<span id="total-income">50,000</span></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:var(--nova-muted);font-family:var(--font-hud)">REMAINING</div>
+            <div style="font-family:var(--font-hud);font-size:22px;color:var(--nova-cyan)">₹<span id="remaining-budget">0</span></div>
+          </div>
+        </div>
+
+        <div id="budget-categories">
+          <!-- Budget bars rendered by JS -->
+        </div>
+
+        <div class="divider"></div>
+        <div style="font-size:11px;color:var(--nova-muted);font-family:var(--font-hud);margin-bottom:10px">ADD EXPENSE</div>
+        <div class="flex-row" style="flex-wrap:wrap;gap:8px">
+          <select class="input-field" id="expense-cat" style="flex:1;min-width:120px">
+            <option>🏠 Rent</option>
+            <option>🍽 Food</option>
+            <option>🚗 Transport</option>
+            <option>💊 Health</option>
+            <option>🎮 Entertainment</option>
+            <option>📚 Education</option>
+            <option>👗 Shopping</option>
+            <option>💡 Utilities</option>
+          </select>
+          <input type="number" class="input-field" id="expense-amount" placeholder="₹ Amount" style="width:120px">
+          <button class="btn btn-danger btn-sm" onclick="addExpense()">ADD</button>
+        </div>
+      </div>
+
+      <!-- Savings Progress -->
+      <div class="card">
+        <div class="card-title">SAVINGS GOAL</div>
+        <div class="input-group">
+          <label class="input-label">GOAL NAME</label>
+          <input type="text" class="input-field" id="goal-name" placeholder="e.g. Emergency Fund, Vacation...">
+        </div>
+        <div class="flex-row">
+          <div class="input-group" style="flex:1;margin-bottom:0">
+            <label class="input-label">TARGET (₹)</label>
+            <input type="number" class="input-field" id="goal-target" placeholder="100000">
+          </div>
+          <div class="input-group" style="flex:1;margin:0 0 0 8px">
+            <label class="input-label">SAVED (₹)</label>
+            <input type="number" class="input-field" id="goal-saved" placeholder="25000">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm mt-12" onclick="updateGoal()" style="width:100%">UPDATE GOAL</button>
+        <div class="mt-12" id="goal-display" style="display:none">
+          <div class="flex-between" style="margin-bottom:6px">
+            <span style="font-size:13px;color:var(--nova-text)" id="goal-label">—</span>
+            <span style="font-size:12px;font-family:var(--font-hud);color:var(--nova-green)" id="goal-pct">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="goal-bar" style="width:0%;background:linear-gradient(90deg,var(--nova-purple),var(--nova-cyan))"></div></div>
+        </div>
+      </div>
+
+      <!-- Stock Basics -->
+      <div class="section-header mt-8">
+        <div class="section-title">STOCK MARKET BASICS</div>
+      </div>
+      <div class="card">
+        <div class="card-title">TODAY'S LESSON</div>
+        <div id="stock-lesson">
+          <div style="font-size:20px;margin-bottom:8px" id="lesson-icon">📊</div>
+          <div style="font-size:16px;color:var(--nova-cyan);font-family:var(--font-hud);margin-bottom:8px" id="lesson-title">What is a Stock?</div>
+          <div style="font-size:14px;color:var(--nova-text);line-height:1.7" id="lesson-body">A stock represents ownership in a company. When you buy a share of Reliance Industries, you own a tiny piece of that company. If the company grows and profits, your share value increases!</div>
+        </div>
+        <div class="divider"></div>
+        <div class="flex-row" style="flex-wrap:wrap;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="nextLesson()">NEXT LESSON →</button>
+          <button class="btn btn-ghost btn-sm" onclick="showScreen('chat')">ASK NOVA 💬</button>
+        </div>
+      </div>
+
+      <!-- Financial Tips -->
+      <div class="nova-insight" id="finance-insight">
+        💡 The 50-30-20 rule: 50% needs, 30% wants, 20% savings — a simple framework for financial wellness.
+      </div>
+    </div>
+
+    <!-- ═══════════════════ LEARN ═══════════════════ -->
+    <div class="screen" id="screen-learn">
+      <div class="section-header">
+        <div class="section-title">KNOWLEDGE HUB</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ASK NOVA ANYTHING</div>
+        <div style="font-size:13px;color:var(--nova-muted);margin-bottom:12px">Technical help, coding, science, history, math — NOVA knows it all!</div>
+        <div class="flex-row">
+          <input type="text" class="input-field" id="learn-query" placeholder="Ask a question..." style="flex:1" onkeydown="if(event.key==='Enter')askNova()">
+          <button class="btn btn-primary btn-sm" onclick="askNova()">ASK</button>
+        </div>
+        <div class="pill-row mt-8">
+          <div class="pill" onclick="quickLearn('Explain recursion in coding')">💻 Recursion</div>
+          <div class="pill" onclick="quickLearn('How does photosynthesis work?')">🌱 Science</div>
+          <div class="pill" onclick="quickLearn('What is compound interest?')">💰 Finance</div>
+          <div class="pill" onclick="quickLearn('Tips for better sleep')">😴 Sleep</div>
+          <div class="pill" onclick="quickLearn('History of India')">🏛 History</div>
+          <div class="pill" onclick="quickLearn('How to meditate?')">🧘 Meditation</div>
+        </div>
+      </div>
+
+      <div class="nova-insight" id="learn-answer" style="display:none;white-space:pre-wrap;line-height:1.7;font-size:14px"></div>
+
+      <!-- Learning Streaks -->
+      <div class="card mt-8">
+        <div class="card-title">LEARNING TOPICS</div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">💻 Programming & Tech</div>
+            <div class="timeline-time">Python, JavaScript, AI, Databases</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--nova-green);box-shadow:var(--glow-green)"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">💰 Finance & Investing</div>
+            <div class="timeline-time">Stocks, Mutual Funds, SIP, FD</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--nova-amber);box-shadow:0 0 10px rgba(255,170,0,0.4)"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">🧬 Health & Wellness</div>
+            <div class="timeline-time">Nutrition, Sleep, Exercise, Mental Health</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--nova-purple);box-shadow:0 0 10px rgba(124,58,237,0.4)"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">🌍 General Knowledge</div>
+            <div class="timeline-time">History, Science, Culture, Languages</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="card">
+        <div class="card-title">LANGUAGE SETTINGS</div>
+        <div style="font-size:14px;color:var(--nova-muted);margin-bottom:12px">NOVA speaks with you in your preferred language</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="setLang('en')" id="lang-en" style="border-color:var(--nova-cyan)">🇬🇧 English</button>
+          <button class="btn btn-outline btn-sm" onclick="setLang('te')" id="lang-te">🇮🇳 తెలుగు</button>
+          <button class="btn btn-outline btn-sm" onclick="setLang('hi')" id="lang-hi">🇮🇳 हिंदी</button>
+        </div>
+        <div class="nova-insight mt-12" id="lang-preview" style="font-size:15px;text-align:center">
+          Hello! I am NOVA, your intelligent companion. 🌟
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #content -->
+</div><!-- end #app -->
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- INSTALL PROMPT -->
+<div id="install-prompt">
+  <div class="install-inner">
+    <div style="font-size:32px">🚀</div>
+    <div class="install-text">
+      <h4>INSTALL NOVA</h4>
+      <p>Add to your home screen for the full experience</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <button class="btn btn-primary btn-sm" id="install-btn" onclick="installApp()">INSTALL</button>
+      <button class="btn btn-ghost btn-sm" onclick="dismissInstall()">Later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// NOVA APP STATE
+// ══════════════════════════════════════════
+const state = {
+  lang: 'en',
+  mood: null,
+  moodHistory: [3,4,2,5,3,4,null],
+  waterCount: 0,
+  steps: 0,
+  sleepHours: 0,
+  foods: [],
+  totalCalories: 0,
+  streak: 1,
+  checkedIn: false,
+  budgetSpent: {Rent:12000,Food:3200,Transport:1800,Health:500,Entertainment:1200,Education:800},
+  budgetLimits: {Rent:15000,Food:8000,Transport:3000,Health:2000,Entertainment:2000,Education:2000},
+  income: 50000,
+  lessonIndex: 0,
+  goalName: '',
+  goalTarget: 0,
+  goalSaved: 0,
+  breathingActive: false,
+  breathPhase: 0,
+  breathTimer: null,
+};
+
+const lessons = [
+  {icon:'📊',title:'What is a Stock?',body:'A stock represents ownership in a company. When you buy a share of Reliance Industries, you own a tiny piece of that company. If the company grows and profits, your share value increases!'},
+  {icon:'📈',title:'Bull vs Bear Market',body:'A Bull market means prices are rising — investors are optimistic. A Bear market means prices are falling. The NSE Nifty50 tracks India\'s top 50 companies.'},
+  {icon:'💰',title:'What is a Mutual Fund?',body:'A mutual fund pools money from many investors to buy a diversified portfolio. SIP (Systematic Investment Plan) lets you invest ₹500/month automatically!'},
+  {icon:'🏦',title:'Fixed Deposit vs Stocks',body:'FDs give safe, fixed returns (6-7%). Stocks give higher returns but with risk (12-15% historically). Young investors should have more stocks; older investors more FDs.'},
+  {icon:'📉',title:'What is Volatility?',body:'Volatility measures how much a stock\'s price swings. High volatility = high risk & potential reward. Nifty is less volatile than individual stocks.'},
+  {icon:'💎',title:'Compounding — 8th Wonder',body:'If you invest ₹10,000/month at 12% annual return for 20 years, you get ₹99 lakhs! Start early — time is your greatest asset in investing.'},
+  {icon:'🌐',title:'Index Funds for Beginners',body:'Index funds simply mirror the Nifty50 index. Low fees, automatic diversification, market returns. Warren Buffett recommends index funds for most investors!'},
+  {icon:'📋',title:'Understanding PE Ratio',body:'PE (Price-to-Earnings) ratio tells if a stock is cheap or expensive. PE of 15 means you pay ₹15 for every ₹1 of profit. Lower PE = potentially cheaper.'},
+];
+
+const insights = [
+  "Your check-ins show resilience. Remember — every day you log your feelings, you're building self-awareness, which is the foundation of mental strength. 💪",
+  "Based on your patterns, you tend to feel better in the mornings. Try to schedule important tasks early in the day to maximize your peak energy. ⚡",
+  "You're doing great! Small consistent habits — like this daily check-in — compound over time into major life improvements. Keep going. 🚀",
+  "Stress and sleep are deeply connected. Even 30 minutes more sleep tonight could improve your mood tomorrow. Try tonight! 😴",
+  "Your emotional awareness is a superpower. Most people never examine their feelings. You're ahead of the curve. 🌟",
+];
+
+const affirmations = [
+  '"You are capable of handling whatever comes your way."',
+  '"Every day is a fresh start. Yesterday does not define tomorrow."',
+  '"నీలో ఉన్న శక్తి నీకు తెలియదు — ఆ శక్తిని నమ్ము."',
+  '"आप जितना सोचते हैं उससे कहीं ज़्यादा मज़बूत हैं।"',
+  '"Progress, not perfection. One step at a time."',
+  '"Your feelings are valid. Your journey is unique. Keep going."',
+  '"The hardest days are building the strongest version of you."',
+  '"Breathe. You\'ve survived 100% of your worst days so far."',
+];
+
+const novaResponses = {
+  en: {
+    greeting: ["Hello! I'm NOVA, your intelligent companion. How can I help you today? 🌟","Great to see you! NOVA is fully online and ready. What's on your mind?","Hi there! I'm here for you — emotionally, intellectually, and practically. What do you need?"],
+    anxious: ["I understand. Anxiety can feel overwhelming, but you're not alone. Take a slow, deep breath with me right now. 4 counts in... 7 hold... 8 out. Would you like to try the breathing exercise in the Mental tab? 💙","Feeling anxious is your nervous system trying to protect you. Let's ground you: name 5 things you can see, 4 you can touch, 3 you can hear. You're safe. 🌿","I'm here. Anxiety lies — it makes things feel bigger than they are. You've handled hard things before. What specifically is worrying you?"],
+    motivate: ["You're reading this, which means you're still trying. That's not nothing — that's everything. 💪 What goal are we pushing toward today?","Every expert was once a beginner. Every success story has chapters of failure. Your story isn't over. What's one small step you can take right now?","The gap between who you are and who you want to be is bridged by action — not motivation. Let's make a plan. What's your #1 priority?"],
+    sleep: ["Sleep is when your brain consolidates memories and your body repairs itself. For better sleep: dim lights 1hr before bed, no screens 30min before, keep room cool (19-21°C). 😴","Try the 4-7-8 technique: breathe in for 4 counts, hold for 7, exhale for 8. This activates your parasympathetic nervous system for calm. 🌙","Your sleep quality affects mood, memory, weight, and immunity. Try going to bed the same time every night — your circadian rhythm will thank you!"],
+    budget: ["50-30-20 rule: 50% on needs, 30% on wants, 20% on savings. For India, try: 40% needs, 30% wants, 30% savings (higher savings rate = faster financial freedom). 💰","Track every rupee for 30 days. Most people are shocked by how much they spend on small things. Awareness is the first step to financial control. 📊","Emergency fund first! Keep 3-6 months of expenses in a liquid fund before investing in stocks. This is your financial safety net."],
+    stock: ["Stocks represent ownership in companies. Start with index funds like Nifty50 via SIP — safe, diversified, and historically gives 12-15% annual returns. 📈","Golden rule: Never invest money you can't afford to lose in stocks. Start with ₹500/month SIP in a large-cap index fund. Time in market > timing the market. 📊","Great for beginners: 1) Open Zerodha/Groww account, 2) Start Nifty50 index fund SIP, 3) Add more as you learn. Keep it simple! 💡"],
+    default: ["Interesting question! Let me think through this carefully for you... Could you give me more context so I can give you the most helpful answer? 🤔","I'm processing that. NOVA has knowledge across finance, health, mental wellness, technology, and much more. What aspect interests you most?","Great topic! I can explore this from multiple angles. Are you looking for a quick overview or a deeper dive? 🔍"],
+  },
+  te: {
+    greeting: ["నమస్కారం! నేను NOVA, మీ తెలివైన సహాయకుడు. ఈరోజు మీకు ఎలా సాయం చేయగలను? 🌟","అందించినందుకు ధన్యవాదాలు! NOVA పూర్తిగా సిద్ధంగా ఉంది. మీ మనసులో ఏముంది?"],
+    default: ["మీ ప్రశ్న చాలా మంచిది! NOVA మీకు అన్ని రంగాలలో సహాయం చేయగలదు — ఆర్థికం, ఆరోగ్యం, మానసిక ఆరోగ్యం. మరింత వివరాలు చెప్పగలరా? 💙","నేను అర్థం చేసుకుంటున్నాను. NOVA మీకు ఎల్లప్పుడూ అండగా ఉంటుంది. 🌟"],
+    motivate: ["మీలో ఉన్న శక్తి మీకు తెలియదు. ప్రతి రోజు ఒక అడుగు వేయండి — అది చాలు! 💪 మీ లక్ష్యం ఏమిటో చెప్పండి, కలిసి పని చేద్దాం."],
+  },
+  hi: {
+    greeting: ["नमस्ते! मैं NOVA हूं, आपका बुद्धिमान साथी। आज मैं आपकी कैसे मदद कर सकता हूं? 🌟","आपसे मिलकर खुशी हुई! NOVA पूरी तरह तैयार है। क्या बात करना चाहेंगे?"],
+    default: ["बहुत अच्छा सवाल! NOVA वित्त, स्वास्थ्य, मानसिक स्वास्थ्य, तकनीक — सब में मदद कर सकता है। थोड़ा और बताइए? 💙","मैं समझ रहा हूं। NOVA हमेशा आपके साथ है। 🌟"],
+    motivate: ["आप जितना सोचते हैं उससे कहीं ज़्यादा मज़बूत हैं! 💪 हर दिन एक कदम — बस इतना काफी है। आपका लक्ष्य क्या है?"],
+    anxious: ["मैं समझता हूं। चिंता होना स्वाभाविक है। एक गहरी सांस लें — 4 गिनने तक अंदर... 7 तक रोकें... 8 तक बाहर। आप सुरक्षित हैं। 💙"],
+  }
+};
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+window.addEventListener('load', () => {
+  setTimeout(initApp, 2200);
+});
+
+function initApp() {
+  document.getElementById('splash').classList.add('hidden');
+  updateHomeDisplay();
+  renderMoodChart();
+  renderBudget();
+  renderWaterGlasses();
+  updateSteps(0);
+  setupInstallPrompt();
+  setTimeout(() => {
+    document.getElementById('install-prompt').classList.add('show');
+  }, 5000);
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const navItems = document.querySelectorAll('.nav-item');
+  const navMap = {home:0,chat:1,mental:2,health:3,finance:4,learn:5};
+  if (navMap[name] !== undefined) navItems[navMap[name]].classList.add('active');
+  document.getElementById('content').scrollTop = 0;
+}
+
+// ══════════════════════════════════════════
+// HOME DISPLAY
+// ══════════════════════════════════════════
+function updateHomeDisplay() {
+  const now = new Date();
+  const days = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('home-date').textContent = `${days[now.getDay()]} · ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  
+  const h = now.getHours();
+  let greet, greeting;
+  if (h < 12) { greet = '🌅'; greeting = 'Good Morning'; }
+  else if (h < 17) { greet = '☀️'; greeting = 'Good Afternoon'; }
+  else if (h < 20) { greet = '🌇'; greeting = 'Good Evening'; }
+  else { greet = '🌙'; greeting = 'Good Night'; }
+  document.getElementById('home-greeting').textContent = `${greet} ${greeting}!`;
+  document.getElementById('home-message').textContent = 'NOVA is here to support you today. How are you feeling?';
+  document.getElementById('streak-badge').textContent = `🔥 ${state.streak} day streak`;
+  document.getElementById('home-mood').textContent = state.mood ? ['😔','😕','😐','😊','🤩'][state.mood-1] : '--';
+  document.getElementById('mood-trend').textContent = state.mood ? ['Low energy','Below average','Neutral','Good vibes!','Amazing!'][state.mood-1] : 'Not logged yet';
+  document.getElementById('home-water').textContent = state.waterCount;
+  document.getElementById('home-steps').textContent = state.steps.toLocaleString();
+  document.getElementById('home-sleep').textContent = state.sleepHours > 0 ? state.sleepHours.toFixed(1) : '--';
+  
+  const insightEl = document.getElementById('home-insight');
+  insightEl.textContent = insights[Math.floor(Math.random() * insights.length)];
+}
+
+// ══════════════════════════════════════════
+// MOOD CHART
+// ══════════════════════════════════════════
+function renderMoodChart() {
+  const chart = document.getElementById('mood-chart');
+  const colors = ['#ff4444','#ff8800','#ffaa00','#00d4ff','#00ff88'];
+  chart.innerHTML = state.moodHistory.map((v,i) => {
+    if (!v) return `<div class="chart-bar" style="height:10%;background:rgba(0,212,255,0.1)" data-val="—"></div>`;
+    const h = (v/5)*100;
+    return `<div class="chart-bar" style="height:${h}%;background:${colors[v-1]};opacity:0.8" data-val="${['😔','😕','😐','😊','🤩'][v-1]}"></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// LANGUAGE
+// ══════════════════════════════════════════
+function cycleLang() {
+  const langs = ['en','te','hi'];
+  const names = {en:'EN',te:'TE',hi:'HI'};
+  const idx = langs.indexOf(state.lang);
+  state.lang = langs[(idx+1) % langs.length];
+  document.getElementById('lang-display').textContent = names[state.lang];
+  document.getElementById('input-lang').textContent = names[state.lang];
+  updateLangPreview();
+  showToast(`Language: ${state.lang.toUpperCase()}`);
+}
+
+function setLang(l) {
+  state.lang = l;
+  const names = {en:'EN',te:'TE',hi:'HI'};
+  document.getElementById('lang-display').textContent = names[l];
+  document.getElementById('input-lang').textContent = names[l];
+  document.querySelectorAll('[id^=lang-]').forEach(b => b.style.borderColor = '');
+  document.getElementById('lang-'+l).style.borderColor = 'var(--nova-cyan)';
+  updateLangPreview();
+}
+
+function updateLangPreview() {
+  const previews = {
+    en: 'Hello! I am NOVA, your intelligent companion. How can I help you today? 🌟',
+    te: 'నమస్కారం! నేను NOVA, మీ తెలివైన సహాయకుడు. ఈరోజు మీకు ఎలా సాయం చేయగలను? 🌟',
+    hi: 'नमस्ते! मैं NOVA हूं, आपका बुद्धिमान साथी। आज मैं आपकी कैसे मदद कर सकता हूं? 🌟'
+  };
+  document.getElementById('lang-preview').textContent = previews[state.lang];
+}
+
+// ══════════════════════════════════════════
+// CHAT
+// ══════════════════════════════════════════
+function getNOVAResponse(input) {
+  const lower = input.toLowerCase();
+  const r = novaResponses[state.lang] || novaResponses.en;
+  
+  if (lower.includes('anxious') || lower.includes('anxiety') || lower.includes('nervous') || lower.includes('panic') || lower.includes('చింత') || lower.includes('घबर')) return pick(r.anxious || novaResponses.en.anxious);
+  if (lower.includes('motivat') || lower.includes('inspire') || lower.includes('give up') || lower.includes('tired') || lower.includes('ప్రేరణ') || lower.includes('प्रेरित')) return pick(r.motivate || novaResponses.en.motivate);
+  if (lower.includes('sleep') || lower.includes('insomnia') || lower.includes('నిద్ర') || lower.includes('नींद')) return pick(r.sleep || novaResponses.en.sleep);
+  if (lower.includes('budget') || lower.includes('money') || lower.includes('finance') || lower.includes('బడ్జెట్') || lower.includes('पैसे')) return pick(r.budget || novaResponses.en.budget);
+  if (lower.includes('stock') || lower.includes('invest') || lower.includes('share') || lower.includes('nifty') || lower.includes('నిఫ్టీ')) return pick(r.stock || novaResponses.en.stock);
+  if (lower.includes('నమస్కారం') || lower.includes('hello') || lower.includes('hi') || lower.includes('नमस्ते')) return pick(r.greeting || novaResponses.en.greeting);
+  if (lower.includes('sad') || lower.includes('depressed') || lower.includes('unhappy') || lower.includes('దుఃఖ') || lower.includes('दुखी')) return "I hear you. Sadness is a valid emotion — you don't have to fix it immediately. Sometimes it helps just to let yourself feel it. Would you like to talk about what's making you feel this way? I'm here, no judgment. 💙";
+  if (lower.includes('happy') || lower.includes('great') || lower.includes('amazing') || lower.includes('సంతోషం')) return "That's wonderful to hear! 🎉 Your positive energy is contagious. What's making you feel so good today? Let's keep that momentum going!";
+  if (lower.includes('stress') || lower.includes('overwhelm') || lower.includes('pressure') || lower.includes('ఒత్తిడి') || lower.includes('तनाव')) return "Stress is a signal from your body that you care — but too much hurts. Let's prioritize: what's the #1 thing causing stress right now? Break it into 3 smaller tasks. You can't eat an elephant in one bite. 🐘";
+  if (lower.includes('health') || lower.includes('workout') || lower.includes('exercise') || lower.includes('diet')) return "Great focus on health! For beginners: aim for 7,000+ steps daily, 7-8 hours of sleep, and drink 2.5-3L water. These three habits alone transform your energy and mood significantly. 💪";
+  if (lower.includes('python') || lower.includes('code') || lower.includes('programming') || lower.includes('javascript')) return "Love the tech curiosity! Python is excellent for beginners — clean syntax, powerful libraries. JavaScript rules the web. Want to start? I'd suggest: 1) Pick ONE language, 2) Build small projects daily, 3) Use freeCodeCamp or CS50. What are you building? 💻";
+  return pick(r.default || novaResponses.en.default);
+}
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  addMessage(text, 'user');
+  input.value = '';
+  input.style.height = 'auto';
+  
+  const typing = addTyping();
+  const delay = 800 + Math.random() * 800;
+  setTimeout(() => {
+    typing.remove();
+    addMessage(getNOVAResponse(text), 'nova');
+  }, delay);
+}
+
+function addMessage(text, who) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg msg-' + who;
+  if (who === 'nova') div.innerHTML = `<div class="msg-name">◈ NOVA</div><div>${text}</div>`;
+  else div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg msg-nova';
+  div.innerHTML = `<div class="msg-name">◈ NOVA</div><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function sendQuick(el) {
+  document.getElementById('chat-input').value = el.textContent;
+  showScreen('chat');
+  setTimeout(sendMessage, 100);
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ══════════════════════════════════════════
+// MENTAL HEALTH
+// ══════════════════════════════════════════
+function selectMood(val, el) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  state.mood = val;
+  updateHomeDisplay();
+}
+
+function togglePill(el) {
+  el.classList.toggle('active');
+}
+
+function updateSlider(el, id) {
+  document.getElementById(id).textContent = el.value;
+}
+
+function saveCheckin() {
+  if (!state.mood) { showToast('Please select your mood first!'); return; }
+  state.checkedIn = true;
+  state.streak++;
+  state.moodHistory[new Date().getDay()] = state.mood;
+  renderMoodChart();
+  
+  const energy = document.getElementById('energy-val').textContent;
+  const stress = document.getElementById('stress-val').textContent;
+  const focus = document.getElementById('focus-val').textContent;
+  const journal = document.getElementById('journal-text').value;
+  
+  const feelings = [...document.querySelectorAll('.pill.active')].map(p => p.textContent).join(', ');
+  const moodLabel = ['low','below average','neutral','good','amazing'][state.mood-1];
+  
+  let insight = `◈ Check-in recorded! You're feeling ${moodLabel} today`;
+  if (feelings) insight += `, with feelings of: ${feelings}`;
+  insight += `.\n\nEnergy: ${energy}/10 · Stress: ${stress}/10 · Focus: ${focus}/10\n\n`;
+  
+  if (parseInt(stress) >= 7) insight += "⚠️ High stress detected. I recommend: a 10-min walk, the 4-7-8 breathing exercise below, and reducing your task list to just 3 priorities today.\n\n";
+  if (parseInt(energy) <= 3) insight += "🔋 Low energy today. Make sure to hydrate, eat a nutritious meal, and consider a 20-minute power nap if possible.\n\n";
+  if (state.mood >= 4) insight += "🌟 Excellent emotional state! This is a great day to tackle challenging tasks and meaningful goals.";
+  if (state.mood <= 2) insight += "💙 Low mood days are part of life. Be gentle with yourself. Small acts of self-care — a warm shower, a walk, calling a friend — can shift your energy. You're not alone.";
+  
+  const el = document.getElementById('mental-insight');
+  el.textContent = insight;
+  el.style.display = 'block';
+  
+  updateHomeDisplay();
+  showToast('✓ Check-in saved!');
+}
+
+// Breathing
+let breathInterval = null;
+function toggleBreathing() {
+  if (state.breathingActive) {
+    clearInterval(breathInterval);
+    state.breathingActive = false;
+    document.getElementById('breath-btn').textContent = '▶ START BREATHING';
+    document.getElementById('breath-text').textContent = 'TAP';
+    document.getElementById('breath-phase').textContent = 'START';
+    document.getElementById('breath-ring').style.transition = 'none';
+    document.getElementById('breath-ring').style.strokeDashoffset = '264';
+    return;
+  }
+  state.breathingActive = true;
+  document.getElementById('breath-btn').textContent = '⏹ STOP';
+  runBreathCycle();
+}
+
+function runBreathCycle() {
+  if (!state.breathingActive) return;
+  
+  const phases = [
+    {text:'INHALE',phase:'4 seconds',duration:4000,dashoffset:0},
+    {text:'HOLD',phase:'7 seconds',duration:7000,dashoffset:0},
+    {text:'EXHALE',phase:'8 seconds',duration:8000,dashoffset:264},
+  ];
+  
+  let idx = 0;
+  function next() {
+    if (!state.breathingActive) return;
+    const p = phases[idx % phases.length];
+    document.getElementById('breath-text').textContent = p.text;
+    document.getElementById('breath-phase').textContent = p.phase;
+    const ring = document.getElementById('breath-ring');
+    ring.style.transition = `stroke-dashoffset ${p.duration}ms linear`;
+    ring.style.strokeDashoffset = p.dashoffset;
+    idx++;
+    breathInterval = setTimeout(next, p.duration);
+  }
+  next();
+}
+
+function newAffirmation() {
+  const el = document.getElementById('affirmation-text');
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.textContent = affirmations[Math.floor(Math.random() * affirmations.length)];
+    el.style.opacity = '1';
+  }, 200);
+}
+
+// ══════════════════════════════════════════
+// HEALTH TRACKERS
+// ══════════════════════════════════════════
+function logSleep() {
+  const bed = document.getElementById('bed-time').value;
+  const wake = document.getElementById('wake-time').value;
+  if (!bed || !wake) return;
+  
+  const [bh,bm] = bed.split(':').map(Number);
+  const [wh,wm] = wake.split(':').map(Number);
+  let hours = wh + wm/60 - (bh + bm/60);
+  if (hours < 0) hours += 24;
+  
+  state.sleepHours = hours;
+  const pct = Math.min(hours/8*100, 100);
+  
+  document.getElementById('sleep-display').textContent = hours.toFixed(1)+'h';
+  document.getElementById('sleep-bar').style.width = pct + '%';
+  
+  const quality = hours >= 7.5 ? '✓ Excellent' : hours >= 6 ? '~ Fair' : '⚠ Poor';
+  const colors = {excellent:'var(--nova-green)',fair:'var(--nova-amber)',poor:'var(--nova-red)'};
+  document.getElementById('sleep-quality').textContent = quality;
+  
+  const ring = document.getElementById('sleep-circle');
+  const offset = 201 - (pct/100)*201;
+  ring.style.strokeDashoffset = offset;
+  
+  updateHomeDisplay();
+  showToast(`Sleep logged: ${hours.toFixed(1)} hours`);
+}
+
+function renderWaterGlasses() {
+  const container = document.getElementById('water-glasses');
+  container.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const div = document.createElement('div');
+    div.style.cssText = `width:32px;height:40px;border-radius:0 0 6px 6px;border:2px solid ${i < state.waterCount ? 'var(--nova-cyan)' : 'rgba(0,212,255,0.2)'};background:${i < state.waterCount ? 'rgba(0,212,255,0.3)' : 'transparent'};cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden`;
+    if (i < state.waterCount) {
+      div.innerHTML = '<div style="position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(180deg,rgba(0,212,255,0.1),rgba(0,212,255,0.4));animation:waterFill 0.5s ease"></div>';
+    }
+    div.onclick = () => { state.waterCount = i + 1; renderWaterGlasses(); updateWaterInfo(); };
+    container.appendChild(div);
+  }
+  updateWaterInfo();
+}
+
+function addWater() {
+  if (state.waterCount < 8) { state.waterCount++; renderWaterGlasses(); updateWaterInfo(); }
+  updateHomeDisplay();
+}
+
+function removeWater() {
+  if (state.waterCount > 0) { state.waterCount--; renderWaterGlasses(); updateWaterInfo(); }
+}
+
+function updateWaterInfo() {
+  document.getElementById('water-count-header').textContent = `${state.waterCount} / 8`;
+  const tips = [
+    'Start strong — drink a glass right when you wake up! 🌅',
+    'Good start! Have another glass before your next meal.',
+    'Halfway there! Keep sipping throughout the day. 💧',
+    'Great progress! You\'re well-hydrated — keep going!',
+    'Excellent hydration! Your skin and brain thank you. ✨',
+    'Almost at your goal! One more glass to go. 🎯',
+    'So close! One final glass and you\'re done! 💪',
+    '🎉 Goal achieved! Perfect hydration today. Your body is thriving!',
+  ];
+  document.getElementById('water-tip').textContent = tips[Math.min(state.waterCount, 7)];
+  updateHomeDisplay();
+}
+
+function addFood() {
+  const name = document.getElementById('food-input').value.trim();
+  const cal = parseInt(document.getElementById('cal-input').value) || 0;
+  if (!name) return;
+  
+  state.foods.push({name, cal});
+  state.totalCalories += cal;
+  document.getElementById('food-input').value = '';
+  document.getElementById('cal-input').value = '';
+  renderFoodList();
+}
+
+function quickFood(name, cal) {
+  document.getElementById('food-input').value = name;
+  document.getElementById('cal-input').value = cal;
+  addFood();
+}
+
+function renderFoodList() {
+  const list = document.getElementById('food-list');
+  if (state.foods.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--nova-muted);font-size:13px;padding:16px">No meals logged yet. Add your first meal!</div>';
+    document.getElementById('cal-badge').textContent = '0 kcal';
+    return;
+  }
+  list.innerHTML = state.foods.map((f,i) => `
+    <div class="food-item">
+      <span class="food-name">${f.name}</span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="food-cal">${f.cal} kcal</span>
+        <span class="food-del" onclick="removeFood(${i})">✕</span>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('cal-badge').textContent = `${state.totalCalories} kcal`;
+}
+
+function removeFood(i) {
+  state.totalCalories -= state.foods[i].cal;
+  state.foods.splice(i, 1);
+  renderFoodList();
+}
+
+function logSteps() {
+  const val = parseInt(document.getElementById('steps-input').value) || 0;
+  updateSteps(val);
+  document.getElementById('steps-input').value = '';
+  showToast(`Steps updated: ${val.toLocaleString()}`);
+}
+
+function updateSteps(val) {
+  state.steps = val;
+  const pct = Math.min(val/10000*100, 100);
+  document.getElementById('steps-display').textContent = val.toLocaleString();
+  document.getElementById('steps-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('steps-bar').style.width = pct + '%';
+  updateHomeDisplay();
+}
+
+// ══════════════════════════════════════════
+// FINANCE
+// ══════════════════════════════════════════
+function renderBudget() {
+  const container = document.getElementById('budget-categories');
+  const cats = ['Rent','Food','Transport','Health','Entertainment','Education'];
+  const icons = {Rent:'🏠',Food:'🍽',Transport:'🚗',Health:'💊',Entertainment:'🎮',Education:'📚'};
+  
+  let totalSpent = Object.values(state.budgetSpent).reduce((a,b)=>a+b,0);
+  document.getElementById('remaining-budget').textContent = (state.income - totalSpent).toLocaleString('en-IN');
+  
+  container.innerHTML = cats.map(cat => {
+    const spent = state.budgetSpent[cat] || 0;
+    const limit = state.budgetLimits[cat] || 1000;
+    const pct = Math.min(spent/limit*100, 100);
+    const cls = pct >= 100 ? 'fill-danger' : pct >= 80 ? 'fill-warn' : 'fill-safe';
+    return `<div class="budget-bar-wrap">
+      <div class="budget-label-row">
+        <span class="budget-cat">${icons[cat]} ${cat}</span>
+        <span class="budget-amounts">₹${spent.toLocaleString('en-IN')} / ₹${limit.toLocaleString('en-IN')}</span>
+      </div>
+      <div class="budget-progress"><div class="budget-fill ${cls}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function addExpense() {
+  const cat = document.getElementById('expense-cat').value.replace(/[^a-zA-Z]/g,'');
+  const amount = parseInt(document.getElementById('expense-amount').value) || 0;
+  if (!amount) return;
+  
+  if (state.budgetSpent[cat] !== undefined) {
+    state.budgetSpent[cat] += amount;
+  }
+  document.getElementById('expense-amount').value = '';
+  renderBudget();
+  showToast(`Expense added: ₹${amount.toLocaleString('en-IN')}`);
+}
+
+function updateGoal() {
+  const name = document.getElementById('goal-name').value.trim();
+  const target = parseInt(document.getElementById('goal-target').value) || 0;
+  const saved = parseInt(document.getElementById('goal-saved').value) || 0;
+  if (!name || !target) return;
+  
+  state.goalName = name;
+  state.goalTarget = target;
+  state.goalSaved = saved;
+  
+  const pct = Math.min(saved/target*100, 100);
+  document.getElementById('goal-display').style.display = 'block';
+  document.getElementById('goal-label').textContent = `${name} — ₹${saved.toLocaleString('en-IN')} of ₹${target.toLocaleString('en-IN')}`;
+  document.getElementById('goal-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('goal-bar').style.width = pct + '%';
+  showToast('Goal updated!');
+}
+
+function nextLesson() {
+  state.lessonIndex = (state.lessonIndex + 1) % lessons.length;
+  const l = lessons[state.lessonIndex];
+  document.getElementById('lesson-icon').textContent = l.icon;
+  document.getElementById('lesson-title').textContent = l.title;
+  document.getElementById('lesson-body').textContent = l.body;
+  showToast(`Lesson ${state.lessonIndex + 1}/${lessons.length}`);
+}
+
+// ══════════════════════════════════════════
+// LEARN / ASK NOVA
+// ══════════════════════════════════════════
+const knowledgeBase = {
+  recursion: "🔄 Recursion in coding:\n\nRecursion is when a function calls itself to solve smaller versions of the same problem.\n\nExample in Python:\ndef factorial(n):\n  if n == 0: return 1\n  return n * factorial(n-1)\n\nfactorial(5) = 5×4×3×2×1 = 120\n\nKey: Every recursive function needs a BASE CASE (when to stop) and a RECURSIVE CASE (when to keep going). Without a base case = infinite loop = stack overflow!",
+  photosynthesis: "🌱 Photosynthesis:\n\n6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂\n\nPlants are solar-powered food factories! Chlorophyll (the green pigment) captures sunlight. The plant absorbs CO₂ from air and water from soil, then produces glucose (food) and releases oxygen as a byproduct.\n\nFun fact: All the oxygen you breathe right now was produced by plants doing photosynthesis. 🌍",
+  compound: "💰 Compound Interest:\n\nFormula: A = P(1 + r/n)^(nt)\n\nP = principal, r = rate, n = compounds per year, t = time\n\nExample: ₹10,000 at 12% for 10 years:\nSimple interest = ₹22,000\nCompound interest = ₹31,058!\n\nThe difference? ₹9,058 of 'interest on interest'.\n\nRULE OF 72: Divide 72 by interest rate = years to double money.\nAt 12%: 72/12 = 6 years to double! 🚀",
+  sleep: "😴 Sleep Science:\n\nSleep has 4 stages repeating every 90 minutes:\n• N1: Light sleep (1-5 min)\n• N2: Core sleep (10-25 min) - memory consolidation\n• N3: Deep sleep - body repair, immune boost\n• REM: Dreaming - emotional processing, creativity\n\nOptimal: 7-9 hours with 4-6 complete cycles.\n\n🔑 Sleep tips:\n• Consistent schedule (even weekends)\n• Dark, cool room (18-20°C)\n• No screens 30 min before bed\n• Avoid caffeine after 2 PM",
+  meditation: "🧘 How to Meditate:\n\n5-minute starter technique:\n\n1. Sit comfortably, close your eyes\n2. Focus on your breath — in through nose, out through mouth\n3. Count each exhale: 1, 2, 3... up to 10, then restart\n4. When your mind wanders (it will!), gently return to counting\n5. That's it. Repeat daily.\n\nScience: Just 8 weeks of daily meditation physically changes brain structure — growing the prefrontal cortex (decision-making) and shrinking the amygdala (fear/stress).\n\nStart small: 5 minutes daily beats 1 hour weekly. 🧠",
+  india: "🏛 History of India (Brief):\n\n• 3300 BCE: Indus Valley Civilization — world's first urban planning!\n• 322 BCE: Maurya Empire — Chandragupta Maurya unifies India\n• 320 CE: Gupta Empire — Golden Age of science, math, art\n• 1526: Mughal Empire — Babur defeats Ibrahim Lodi\n• 1600s: British East India Company arrives\n• 1857: First War of Independence\n• 1947: Independence! Partition into India & Pakistan\n• 1950: Republic of India — world's largest democracy\n\n🇮🇳 India gave the world: Zero, Chess, Yoga, Algebra, Astronomy, Cotton fabric, Shampoo!",
+};
+
+function askNova() {
+  const query = document.getElementById('learn-query').value.trim().toLowerCase();
+  if (!query) return;
+  
+  const el = document.getElementById('learn-answer');
+  el.style.display = 'block';
+  el.textContent = '◈ NOVA is thinking...';
+  
+  setTimeout(() => {
+    let answer = null;
+    if (query.includes('recursion') || query.includes('recursive')) answer = knowledgeBase.recursion;
+    else if (query.includes('photosynthesis')) answer = knowledgeBase.photosynthesis;
+    else if (query.includes('compound interest') || query.includes('interest')) answer = knowledgeBase.compound;
+    else if (query.includes('sleep') || query.includes('insomnia')) answer = knowledgeBase.sleep;
+    else if (query.includes('meditat') || query.includes('mindful')) answer = knowledgeBase.meditation;
+    else if (query.includes('india') || query.includes('history')) answer = knowledgeBase.india;
+    else answer = `◈ Great question! While I have knowledge about ${query}, for the most detailed and current answer, try asking me in the Chat tab where I can give a more personalized response.\n\nYou can also tap one of the quick topics above to see sample answers. 💡\n\nTip: Ask about: recursion, photosynthesis, compound interest, sleep, meditation, history of India — and many more topics!`;
+    
+    el.textContent = answer;
+  }, 600);
+}
+
+function quickLearn(q) {
+  document.getElementById('learn-query').value = q;
+  askNova();
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ══════════════════════════════════════════
+// PWA INSTALL
+// ══════════════════════════════════════════
+let deferredPrompt = null;
+function setupInstallPrompt() {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('install-prompt').classList.add('show');
+  });
+}
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { deferredPrompt = null; dismissInstall(); });
+  } else {
+    showToast('To install: Share → Add to Home Screen');
+    setTimeout(dismissInstall, 3000);
+  }
+}
+
+function dismissInstall() {
+  document.getElementById('install-prompt').classList.remove('show');
+}
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('nova-sw.js').catch(() => {});
+}
+
+// Update budget month
+document.getElementById('budget-month').textContent = new Date().toLocaleString('en',{month:'short',year:'numeric'}).toUpperCase();
+</script>
+</body>
+</html>
