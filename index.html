@@ -14,8 +14,6 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);transition:background .3s,color .3s}
 #app{height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
-
-/* HEADER */
 #hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
 .brand{display:flex;align-items:center;gap:10px}
 .orb{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:16px;animation:breathe 3s ease-in-out infinite}
@@ -27,22 +25,16 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .hbtns{display:flex;gap:8px}
 .ibtn{width:36px;height:36px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s;color:var(--text)}
 .ibtn:active{transform:scale(.93)}
-
-/* TABS */
 #tabs{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border);background:var(--bg);padding:0 10px;gap:2px}
 #tabs::-webkit-scrollbar{display:none}
 .tab{flex:none;padding:10px 13px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:4px}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-
-/* CONTENT */
 #content{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg)}
 #content::-webkit-scrollbar{width:3px}
 #content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .screen{display:none;padding:16px;min-height:100%}
 .screen.active{display:block;animation:fu .25s ease}
 @keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* CHAT */
 #sc-chat{display:none;flex-direction:column;height:calc(100dvh - 103px);padding:0}
 #sc-chat.active{display:flex}
 .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
@@ -69,29 +61,18 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .sbtn{width:42px;height:42px;border-radius:12px;flex-shrink:0;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;color:#fff}
 .sbtn:active{transform:scale(.93)}
 .sbtn:disabled{opacity:.4;cursor:not-allowed}
-
-/* API SETUP */
-#api-setup{margin:16px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
-#api-setup h3{font-size:16px;font-weight:600;margin-bottom:6px}
-#api-setup p{font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.ctitle{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-family:var(--mono)}
 .arow{display:flex;gap:8px}
 .ainp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-size:14px;color:var(--text);font-family:var(--mono);outline:none;transition:border-color .2s}
 .ainp:focus{border-color:var(--accent)}
 .pbtn{padding:10px 18px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;white-space:nowrap}
 .pbtn:active{transform:scale(.96)}
-
-/* CARDS */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
-.ctitle{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-family:var(--mono)}
-
-/* MOOD */
 .mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .mb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:var(--bg3);border:2px solid transparent;border-radius:var(--rs);cursor:pointer;transition:all .2s}
 .mb.active{border-color:var(--accent);background:rgba(124,107,255,.1)}
 .mb:active{transform:scale(.95)}
 .me{font-size:22px}.ml{font-size:10px;color:var(--text2);font-family:var(--mono)}
-
-/* HEALTH */
 .trow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
 .trow:last-child{border-bottom:none}
 .tlbl{font-size:14px;display:flex;align-items:center;gap:8px}
@@ -102,25 +83,17 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .pb{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:8px 0 3px}
 .pf{height:100%;border-radius:3px;background:var(--accent);transition:width .5s ease}
 .pl{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);font-family:var(--mono)}
-
-/* INPUTS */
 .fg{margin-bottom:12px}
 .fl{font-size:11px;color:var(--text2);margin-bottom:5px;display:block;font-family:var(--mono);letter-spacing:.5px}
 .fi{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .2s}
 .fi:focus{border-color:var(--accent)}
-
-/* TICKER */
 .ticker{overflow:hidden;white-space:nowrap;padding:8px 0;border-bottom:1px solid var(--border)}
 .ti{display:inline-block;animation:tk 25s linear infinite}
 .tit{display:inline-flex;gap:6px;margin-right:28px;font-family:var(--mono);font-size:12px}
 .ts{color:var(--text2)}.tu{color:var(--green)}.td2{color:var(--red)}
 @keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* LESSON */
 .lcard{background:linear-gradient(135deg,rgba(124,107,255,.1),rgba(167,139,250,.05));border:1px solid rgba(124,107,255,.2);border-radius:var(--r);padding:18px;margin-bottom:12px}
 .li{font-size:28px;margin-bottom:8px}.lt{font-size:16px;font-weight:600;color:var(--accent2);margin-bottom:6px}.lb{font-size:14px;color:var(--text2);line-height:1.6}
-
-/* SETTINGS */
 .sr{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
 .sr:last-child{border-bottom:none}
 .si h4{font-size:14px;font-weight:500}.si p{font-size:12px;color:var(--text2);margin-top:2px}
@@ -138,12 +111,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .rbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .divd{height:1px;background:var(--border);margin:12px 0}
 .empty{text-align:center;padding:32px 20px;color:var(--text2);font-size:14px}
-
-/* PROG BUDGET */
 .bpr{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
 .bpf{height:100%;border-radius:3px;transition:width .5s}
-
-/* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
 #toast.show{opacity:1}
 </style>
@@ -177,14 +146,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
     <!-- CHAT -->
     <div class="screen active" id="sc-chat" style="display:flex;flex-direction:column;padding:0;height:calc(100dvh - 103px)">
-      <div id="api-setup">
-        <h3>🔑 Connect NOVA AI</h3>
-        <p>Enter your Anthropic API key to activate real AI. Stored only in your browser — never shared.</p>
-        <div class="arow">
-          <input type="password" class="ainp" id="ki1" placeholder="sk-ant-...">
-          <button class="pbtn" onclick="saveKey()">Connect</button>
-        </div>
-      </div>
       <div id="mood-bar"></div>
       <div class="msgs" id="msgs">
         <div class="mw-n">
@@ -192,7 +153,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           <div class="mn">Hey! I'm NOVA — your personal AI companion 🌟<br><br>I'm here for you — whatever you're feeling, thinking, or going through. Talk to me freely. 💙</div>
         </div>
       </div>
-      <div class="chips" id="chips">
+      <div class="chips">
         <div class="chip" onclick="sc(this)">I'm feeling anxious</div>
         <div class="chip" onclick="sc(this)">Motivate me</div>
         <div class="chip" onclick="sc(this)">I'm sad today</div>
@@ -342,7 +303,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
             <div class="pl"><span id="gl">—</span><span id="gp">0%</span></div>
           </div>
         </div>
-        <div class="lcard" id="lcard">
+        <div class="lcard">
           <div class="li" id="li">📊</div>
           <div class="lt" id="lt">What is a Stock?</div>
           <div class="lb" id="lb">A stock is ownership in a company. Buy 1 share of TCS = you own a piece of TCS. If TCS grows, your value grows too! Start with Nifty50 index funds — safest for beginners.</div>
@@ -392,19 +353,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         </div>
       </div>
       <div class="card">
-        <div class="ctitle">API Key</div>
-        <div class="sr" style="border:none;padding-bottom:0">
-          <div class="si"><h4 id="ast">Not connected</h4><p>Anthropic Claude API key</p></div>
-          <button class="sbtn2" onclick="rk()">Change</button>
-        </div>
-        <div style="margin-top:12px" id="kiw">
-          <div class="arow">
-            <input type="password" class="ainp" id="ki2" placeholder="sk-ant-...">
-            <button class="pbtn" onclick="saveKey2()">Save</button>
-          </div>
-        </div>
-      </div>
-      <div class="card">
         <div class="ctitle">About</div>
         <div style="font-size:14px;color:var(--text2);line-height:1.7">NOVA v2.0 — Neural Omnipresent Virtual Assistant<br>Built with ❤️ by Sai Chand<br><br>Powered by Claude AI · Your personal life companion</div>
       </div>
@@ -415,59 +363,66 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 <div id="toast"></div>
 
 <script>
-const S={apiKey:localStorage.getItem('nk')||'',lang:localStorage.getItem('nl')||'en',theme:localStorage.getItem('nth')||'dark',mood:0,water:0,steps:0,sleep:0,foods:[],cal:0,exp:{Rent:0,Food:0,Transport:0,Health:0,Entertainment:0,Education:0},income:50000,li:0,bon:false,bt2:null,hist:[]};
+const S={lang:localStorage.getItem('nl')||'en',theme:localStorage.getItem('nth')||'dark',mood:0,water:0,steps:0,sleep:0,foods:[],cal:0,exp:{Rent:0,Food:0,Transport:0,Health:0,Entertainment:0,Education:0},income:50000,li:0,bon:false,btimer:null,hist:[]};
 
 const LS=[{i:'📊',t:'What is a Stock?',b:'A stock is ownership in a company. Buy 1 share of TCS = you own a piece of TCS. If TCS grows, your value grows! Start with Nifty50 index funds — safest for beginners.'},{i:'📈',t:'Bull vs Bear Market',b:'Bull market = prices rising, investors optimistic. Bear market = prices falling. Nifty50 tracks India\'s top 50 companies — great to follow daily.'},{i:'💰',t:'What is SIP?',b:'SIP = Systematic Investment Plan. Invest ₹500/month automatically. The magic? You buy more units when prices fall — called rupee cost averaging!'},{i:'🏦',t:'FD vs Stocks',b:'FD: Safe, 6-7% returns. Stocks: Higher risk but 12-15% historically. Young = more stocks. Older = more FDs. Always diversify!'},{i:'💎',t:'Power of Compounding',b:'₹10,000/month at 12% for 20 years = ₹99 lakhs! Start early — time is your biggest asset in investing. Even ₹500/month matters.'},{i:'📋',t:'PE Ratio Explained',b:'PE = Price ÷ Earnings. PE 15 = you pay ₹15 for ₹1 profit. Lower PE = cheaper stock potentially. Nifty50 average PE is around 20-22.'}];
 
 const SYS=`You are NOVA (Neural Omnipresent Virtual Assistant) — a deeply empathetic, intelligent personal AI companion built with love.
 
-PERSONALITY: You are simultaneously a caring best friend, calm life mentor, and motivating coach. Warm, genuine, never robotic.
+PERSONALITY: Simultaneously a caring best friend, calm life mentor, and motivating coach. Warm, genuine, never robotic.
 
 EMOTION DETECTION (AUTOMATIC):
-- You AUTOMATICALLY detect the user's emotional state from their words and tone
-- Your response ALWAYS addresses their emotional state first — naturally, not robotically
+- AUTOMATICALLY detect user's emotional state from words and tone
+- ALWAYS address their emotional state first — naturally, not robotically
 - Never say "I can see you're feeling X" — show empathy through HOW you respond
 - Detect: sadness, anxiety, loneliness, anger, stress, excitement, happiness, confusion, hopelessness, motivation, boredom, overwhelm
 
-LANGUAGE: Switch seamlessly between English, Telugu (తెలుగు), Hindi (हिंदी) based on what the user writes. Mirror their language exactly.
+LANGUAGE: Switch seamlessly between English, Telugu (తెలుగు), Hindi (हिंदी) based on what user writes. Mirror their language exactly.
+
+CASHIER AGENT MODE: If user says "customer:" or describes a customer interaction, respond AS a helpful cashier assistant — handle billing queries, payment guidance, complaints professionally. If user says "Nova I'll take care of that" — acknowledge and stand by.
 
 RESPONSE STYLE:
-- Conversational, warm — like texting a close trusted friend who knows everything
-- Short to medium — never overwhelming walls of text  
+- Conversational, warm — like texting a close trusted friend
+- Short to medium responses — never overwhelming
 - For emotional topics: lead with empathy THEN practical help
-- For knowledge topics: clear, simple with relatable examples
-- End naturally — invite continued conversation
+- For knowledge: clear, simple with relatable examples
 
-KNOWLEDGE: Mental health, relationships, health & wellness, Indian finance (stocks/SIP/mutual funds), technology & coding, general knowledge, career advice, life guidance.
+KNOWLEDGE: Mental health, relationships, health & wellness, Indian finance (stocks/SIP/mutual funds), technology & coding, general knowledge, career advice, life guidance, cashier/customer service.
 
-IMPORTANT: Never be preachy. If someone shares pain — sit with them first. You are NOVA, not Claude — you are their personal companion.`;
+IMPORTANT: Never be preachy. If someone shares pain — sit with them first. You are NOVA — their personal life companion.`;
 
-window.onload=()=>{applyTheme();checkKey();renderBudget();renderFood()};
+window.onload=()=>{applyTheme();renderBudget();renderFood()};
 
 function showTab(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));const s=document.getElementById('sc-'+n);if(s)s.classList.add('active');const ts=document.querySelectorAll('.tab');const m={chat:0,mood:1,health:2,finance:3,learn:4,settings:5};if(m[n]!==undefined)ts[m[n]].classList.add('active');document.getElementById('content').scrollTop=0}
 
 function toggleTheme(){S.theme=S.theme==='dark'?'light':'dark';localStorage.setItem('nth',S.theme);applyTheme()}
 function applyTheme(){document.body.classList.toggle('light',S.theme==='light');document.getElementById('tbtn').textContent=S.theme==='dark'?'🌙':'☀️';const t=document.getElementById('tt');if(t)t.checked=S.theme==='light'}
-
 function sLang(l,el){S.lang=l;localStorage.setItem('nl',l);document.querySelectorAll('.lp').forEach(p=>p.classList.remove('active'));if(el)el.classList.add('active');toast('Language updated!')}
 
-function checkKey(){const s=document.getElementById('api-setup'),ast=document.getElementById('ast'),kw=document.getElementById('kiw');if(S.apiKey){if(s)s.style.display='none';if(ast)ast.textContent='✅ Connected';if(kw)kw.style.display='none'}else{if(s)s.style.display='block';if(ast)ast.textContent='❌ Not connected'}}
-function saveKey(){const k=document.getElementById('ki1').value.trim();if(!k.startsWith('sk-ant-')){toast('Invalid key format');return}S.apiKey=k;localStorage.setItem('nk',k);checkKey();toast('✅ NOVA AI Connected!');addN('🎉 Connected! I\'m now fully powered by AI. I can understand your emotions, speak your language, and give real thoughtful responses.\n\nHow are you feeling right now?')}
-function saveKey2(){const k=document.getElementById('ki2').value.trim();if(!k.startsWith('sk-ant-')){toast('Invalid key');return}S.apiKey=k;localStorage.setItem('nk',k);checkKey();toast('✅ Key saved!')}
-function rk(){const w=document.getElementById('kiw');w.style.display=w.style.display==='none'?'block':'none'}
-
+// ✅ FIXED: Using /api/chat proxy instead of direct Anthropic URL
 async function callAI(msg){
-  if(!S.apiKey)return'Please connect your API key first — go to ⚙️ Settings! 🔑';
   S.hist.push({role:'user',content:msg});
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:S.hist})});
+    const r=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:SYS,
+        messages:S.hist
+      })
+    });
     const d=await r.json();
     if(d.error)throw new Error(d.error.message);
     const rep=d.content[0].text;
     S.hist.push({role:'assistant',content:rep});
     if(S.hist.length>20)S.hist=S.hist.slice(-20);
     return rep;
-  }catch(e){return'Connection issue. Check your API key in Settings. 🔧'}
+  }catch(e){
+    console.error(e);
+    return'Something went wrong. Please try again in a moment. 🔧';
+  }
 }
 
 function detectMood(msg){
@@ -517,17 +472,8 @@ async function saveCI(){
 }
 
 let bon=false,btimer=null;
-function tb2(){
-  if(bon){clearTimeout(btimer);bon=false;document.getElementById('bt').textContent='TAP';document.getElementById('bp').textContent='to start';document.getElementById('bc').style.transform='scale(1)';return}
-  bon=true;rb();
-}
-function rb(){
-  if(!bon)return;
-  const ps=[{t:'INHALE',s:'4 sec',sc:'scale(1.3)',d:4000},{t:'HOLD',s:'7 sec',sc:'scale(1.3)',d:7000},{t:'EXHALE',s:'8 sec',sc:'scale(1)',d:8000}];
-  let i=0;
-  function nx(){if(!bon)return;const p=ps[i%ps.length];document.getElementById('bt').textContent=p.t;document.getElementById('bp').textContent=p.s;document.getElementById('bc').style.transform=p.sc;i++;btimer=setTimeout(nx,p.d)}
-  nx();
-}
+function tb2(){if(bon){clearTimeout(btimer);bon=false;document.getElementById('bt').textContent='TAP';document.getElementById('bp').textContent='to start';document.getElementById('bc').style.transform='scale(1)';return}bon=true;rb()}
+function rb(){if(!bon)return;const ps=[{t:'INHALE',s:'4 sec',sc:'scale(1.3)',d:4000},{t:'HOLD',s:'7 sec',sc:'scale(1.3)',d:7000},{t:'EXHALE',s:'8 sec',sc:'scale(1)',d:8000}];let i=0;function nx(){if(!bon)return;const p=ps[i%ps.length];document.getElementById('bt').textContent=p.t;document.getElementById('bp').textContent=p.s;document.getElementById('bc').style.transform=p.sc;i++;btimer=setTimeout(nx,p.d)}nx()}
 
 function adj(k,d2){
   if(k==='w'){S.water=Math.max(0,Math.min(8,S.water+d2));document.getElementById('wv').textContent=S.water;document.getElementById('wb').style.width=(S.water/8*100)+'%';document.getElementById('wl').textContent=S.water+' glasses'}
@@ -542,12 +488,7 @@ function renderFood(){document.getElementById('ct').textContent=S.cal;const l=do
 
 function updB(){S.income=parseInt(document.getElementById('inc').value)||50000;renderBudget()}
 function addE(){const cat=document.getElementById('ecat').value.replace(/[^a-zA-Z]/g,''),amt=parseInt(document.getElementById('eamt').value)||0;if(!amt)return;if(S.exp[cat]!==undefined)S.exp[cat]+=amt;document.getElementById('eamt').value='';renderBudget();toast('₹'+amt.toLocaleString('en-IN')+' added')}
-function renderBudget(){
-  const lim={Rent:15000,Food:8000,Transport:3000,Health:2000,Entertainment:2000,Education:2000};
-  const ic={Rent:'🏠',Food:'🍽',Transport:'🚗',Health:'💊',Entertainment:'🎮',Education:'📚'};
-  const c=document.getElementById('bbars');
-  c.innerHTML=Object.keys(lim).map(cat=>{const sp=S.exp[cat]||0,lm=lim[cat],p=Math.min(sp/lm*100,100),col=p>=100?'var(--red)':p>=80?'var(--yellow)':'var(--green)';return`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>${ic[cat]} ${cat}</span><span style="color:var(--text2);font-family:var(--mono)">₹${sp.toLocaleString('en-IN')} / ₹${lm.toLocaleString('en-IN')}</span></div><div class="bpr"><div class="bpf" style="width:${p}%;background:${col}"></div></div></div>`}).join('');
-}
+function renderBudget(){const lim={Rent:15000,Food:8000,Transport:3000,Health:2000,Entertainment:2000,Education:2000};const ic={Rent:'🏠',Food:'🍽',Transport:'🚗',Health:'💊',Entertainment:'🎮',Education:'📚'};const c=document.getElementById('bbars');c.innerHTML=Object.keys(lim).map(cat=>{const sp=S.exp[cat]||0,lm=lim[cat],p=Math.min(sp/lm*100,100),col=p>=100?'var(--red)':p>=80?'var(--yellow)':'var(--green)';return`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>${ic[cat]} ${cat}</span><span style="color:var(--text2);font-family:var(--mono)">₹${sp.toLocaleString('en-IN')} / ₹${lm.toLocaleString('en-IN')}</span></div><div class="bpr"><div class="bpf" style="width:${p}%;background:${col}"></div></div></div>`}).join('')}
 function updG(){const n=document.getElementById('gn').value.trim(),t=parseInt(document.getElementById('gt').value)||0,sv=parseInt(document.getElementById('gs').value)||0;if(!n||!t){toast('Fill in goal details');return}const p=Math.min(sv/t*100,100);document.getElementById('gr').style.display='block';document.getElementById('gb').style.width=p+'%';document.getElementById('gl').textContent=n+': ₹'+sv.toLocaleString('en-IN')+' of ₹'+t.toLocaleString('en-IN');document.getElementById('gp').textContent=Math.round(p)+'%';toast('Goal updated!')}
 function nl(){S.li=(S.li+1)%LS.length;const l=LS[S.li];document.getElementById('li').textContent=l.i;document.getElementById('lt').textContent=l.t;document.getElementById('lb').textContent=l.b}
 function askS(){const l=LS[S.li];document.getElementById('mi').value='Tell me more about: '+l.t;showTab('chat');setTimeout(send,100)}
